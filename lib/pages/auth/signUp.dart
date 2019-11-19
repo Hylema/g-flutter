@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/pages/home.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -6,7 +8,9 @@ class SignUp extends StatefulWidget {
 }
 
 class MyFormState extends State {
-  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String _email, _password;
+
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,11 +28,12 @@ class MyFormState extends State {
                         String p = "[a-zA-Z0-9+.\_\%-+]{1,256}@[a-zA-Z0-9][a-zA-Z0-9-]{0,64}(.[a-zA-Z0-9][a-zA-Z0-9-]{0,25})+";
                         RegExp regExp = RegExp(p);
                         if (regExp.hasMatch(input)) return null;
-                        return 'Это не E-mail';
+                        return 'Некорректный Email';
                       },
                       decoration: InputDecoration(
                           labelText: 'Email'
                       ),
+                      onSaved: (input) => _email = input,
                     ),
 
                     SizedBox(height: 20.0),
@@ -40,6 +45,7 @@ class MyFormState extends State {
                       decoration: InputDecoration(
                           labelText: 'Password'
                       ),
+                      onSaved: (input) => _password = input,
                     ),
 
                     SizedBox(height: 20.0),
@@ -58,5 +64,17 @@ class MyFormState extends State {
             )
         )
     );
+  }
+
+  void signUp(context) async {
+    if(_formKey.currentState.validate()){
+      _formKey.currentState.save();
+      try{
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _email, password: _password);
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+      }catch(e){
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text(e.message, style: TextStyle(color: Colors.white)), backgroundColor: Colors.red));
+      }
+    }
   }
 }

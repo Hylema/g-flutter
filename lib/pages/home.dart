@@ -45,23 +45,39 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        backgroundColor: Colors.grey,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-                Icons.search
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            expandedHeight: 150,
+            pinned: true,
+            actions: <Widget>[
+              IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () {},
+              ),
+            ],
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text('Главная'),
+              centerTitle: false,
+              collapseMode: CollapseMode.parallax,
+              background: Container(
+                color: Colors.white,
+                constraints: BoxConstraints.expand(height: 150),
+                child: Image.network(
+                  'https://avatars.mds.yandex.net/get-pdb/199965/32b4ec73-14a2-4550-bd6c-5a7f5f5cdd18/s1200?webp=false',
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
-            onPressed: () {},
           ),
+          SliverList(
+            delegate: SliverChildListDelegate([
+              SizedBox(
+                height: 1000,
+              ),
+            ]),
+          )
         ],
-      ),
-      body: Center(
-        child: Text(
-          _lastSelected,
-          style: TextStyle(fontSize: 32.0),
-        ),
       ),
       bottomNavigationBar: FABBottomAppBar(
         centerItemText: 'Новый',

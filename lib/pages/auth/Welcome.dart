@@ -18,14 +18,14 @@ class NumberTextInputFormatter extends TextInputFormatter {
     print('old = ${oldValue.text}');
     print('new = ${newValue.text}');
 
-    if (newTextLength == 1) {
+    if (newTextLength >= 1) {
       newText.write('+7 ');
-      selectionIndex += 3;
+      selectionIndex += 2;
     }
-    if (newTextLength == 2) {
-      newText.write(newValue.text.substring(0, usedSubstringIndex = 1) + ' ');
-      selectionIndex += 1;
-    }
+//    if (newTextLength == 2) {
+//      newText.write(newValue.text.substring(0, usedSubstringIndex = 1) + ' ');
+//      selectionIndex += 1;
+//    }
 
     if (newTextLength >= usedSubstringIndex) newText.write(newValue.text.substring(usedSubstringIndex));
 
@@ -138,19 +138,34 @@ class _WelcomePageState extends State<WelcomePage> {
 
                             SizedBox(height: 30.0),
 
-                            GestureDetector(
-                                child: Text(
-                                  "или",
-                                  style: TextStyle(
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold
+                            Row(
+                                children: <Widget>[
+                                  Expanded(
+                                      child: Divider(
+                                          color: Colors.blue,
+                                      )
                                   ),
-                                ),
-                                onTap: () {}
-                            ),
-                            Divider(color: Colors.blue,),
 
-                            SizedBox(height: 30.0),
+                                  Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "ИЛИ",
+                                      style: TextStyle(
+                                          color: Colors.blue,
+                                          fontWeight: FontWeight.bold
+                                      ),
+                                    ),
+                                  ),
+
+                                  Expanded(
+                                      child: Divider(
+                                          color: Colors.blue
+                                      )
+                                  ),
+                                ]
+                            ),
+
+                            SizedBox(height: 20.0),
 
                             TextFormField(
                               keyboardType: TextInputType.phone,
@@ -231,7 +246,7 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   void checkInputs(){
-    if(_password != null && _email != null && _phone != null){
+    if(_password != null && _email != null || _phone != null){
       setState(() {
         colorTextButton = Colors.white;
       });
@@ -277,8 +292,7 @@ class _WelcomePageState extends State<WelcomePage> {
           codeAutoRetrievalTimeout: autoRetrieve,
       );
 
-
-      //final AuthCredential credential = PhoneAuthProvider.getCredential(verificationId: null, smsCode: null)
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Otp()));
 //
 //
 //

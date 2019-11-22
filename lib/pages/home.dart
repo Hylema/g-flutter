@@ -98,6 +98,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   Widget _buildFab(BuildContext context) {
     final icons = [ Icons.sms, Icons.mail, Icons.phone ];
+
     return AnchoredOverlay(
       showOverlay: true,
       overlayBuilder: (context, offset) {
@@ -110,9 +111,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         );
       },
       child: FloatingActionButton(
-        onPressed: () { },
+        onPressed: () {},
         tooltip: 'Increment',
-        child: Icon(Icons.add),
+        child: Icon(Icons.remove),
         elevation: 2.0,
       ),
     );

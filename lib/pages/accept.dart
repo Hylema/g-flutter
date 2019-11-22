@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:flutter_app/pages/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +41,6 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
   bool didReadNotifications = false;
   int unReadNotificationsCount = 0;
 
-  // Returns "Appbar"
   get _getAppbar {
     return new AppBar(
       backgroundColor: Colors.transparent,
@@ -59,18 +58,17 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
       centerTitle: true,
     );
   }
-
-  // Return "Verification Code" label
   get _getVerificationCodeLabel {
     return new Text(
-      "Verification Code",
+      "Код верификации",
       textAlign: TextAlign.center,
       style: new TextStyle(
-          fontSize: 28.0, color: Colors.black, fontWeight: FontWeight.bold),
+          fontSize: 28.0,
+          color: Colors.black,
+          fontWeight: FontWeight.bold
+      ),
     );
   }
-
-  // Return "Email" label
   get _getEmailLabel {
     return new Text(
       "Please enter the OTP sent\non your registered Email ID.",
@@ -79,8 +77,6 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
           fontSize: 18.0, color: Colors.black, fontWeight: FontWeight.w600),
     );
   }
-
-  // Return "OTP" input field
   get _getInputField {
     return new Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -92,8 +88,6 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
       ],
     );
   }
-
-  // Returns "OTP" input part
   get _getInputPart {
     return new Column(
       mainAxisSize: MainAxisSize.max,
@@ -107,8 +101,6 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
       ],
     );
   }
-
-  // Returns "Timer" label
   get _getTimerText {
     return Container(
       height: 32,
@@ -127,8 +119,6 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
       ),
     );
   }
-
-  // Returns "Resend" button
   get _getResendButton {
     return new InkWell(
       child: new Container(
@@ -150,8 +140,6 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
       },
     );
   }
-
-  // Returns "Otp" keyboard
   get _getOtpKeyboard {
     return new Container(
         height: _screenSize.width - 80,
@@ -384,6 +372,10 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
             _secondDigit.toString() +
             _thirdDigit.toString() +
             _fourthDigit.toString();
+
+        if(otp.length == 4){
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+        }
 
         // Verify your otp by here. API call
       }

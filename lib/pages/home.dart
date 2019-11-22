@@ -2,7 +2,6 @@ import 'package:flutter_app/fab_with_icons.dart';
 import 'package:flutter_app/fab_bottom_app_bar.dart';
 import 'package:flutter_app/layout.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/auth/signIn.dart';
 
 class HomePage extends StatelessWidget {
   @override

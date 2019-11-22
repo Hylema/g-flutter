@@ -1,9 +1,10 @@
-import 'package:flutter_app/pages/auth/signUp.dart';
+import 'package:flutter_app/pages/auth/SignUp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_app/pages/accept.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/pages/auth/ResetPassword.dart';
 
 class NumberTextInputFormatter extends TextInputFormatter {
   @override
@@ -42,7 +43,7 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String _email, _password;
+  String _email, _password, _phone;
   Color colorTextButton = Colors.white54;
   bool disablePassword = true;
 
@@ -162,6 +163,10 @@ class _WelcomePageState extends State<WelcomePage> {
                                 icon: Icon(Icons.phone_iphone),
                                 hintText: "Mobile*",
                               ),
+                              onChanged: (input){
+                                _phone = input;
+                                checkInputs();
+                              },
                             ),
 
                             SizedBox(height: 20.0),
@@ -182,6 +187,7 @@ class _WelcomePageState extends State<WelcomePage> {
 
                             SizedBox(height: 20.0),
 
+
                             GestureDetector(
                                 child: Text(
                                   "Забыли пароль?",
@@ -190,8 +196,11 @@ class _WelcomePageState extends State<WelcomePage> {
                                       fontWeight: FontWeight.bold
                                   ),
                                 ),
-                                onTap: () {}
+                                onTap: () {
+                                  resetPassword();
+                                }
                             ),
+
 
                             Divider(color: Colors.blue),
 
@@ -222,7 +231,7 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   void checkInputs(){
-    if(_password != null && _email != null){
+    if(_password != null && _email != null && _phone != null){
       setState(() {
         colorTextButton = Colors.white;
       });
@@ -230,16 +239,59 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   void signIn(context) async {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Otp()));
-    if(_formKey.currentState.validate()){
-      _formKey.currentState.save();
-      try{
-        await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password);
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Otp()));
-      }catch(e){
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text(e.message, style: TextStyle(color: Colors.white)), backgroundColor: Colors.red));
+    if(_phone == null){
+      if(_formKey.currentState.validate()){
+        _formKey.currentState.save();
+        try{
+          await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password);
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+        }catch(e){
+          Scaffold.of(context).showSnackBar(SnackBar(content: Text(e.message, style: TextStyle(color: Colors.white)), backgroundColor: Colors.red));
+        }
       }
+    } else {
+      String verificationId;
+
+      final PhoneCodeAutoRetrievalTimeout autoRetrieve = (String verId) {
+        verificationId = verId;
+      };
+
+      final PhoneCodeSent smsCodeSent = (String verId, [int forceCodeResend]) {
+        verificationId = verId;
+      };
+
+      final PhoneVerificationCompleted verFieldSuccess = (user) {
+        print('Success');
+      };
+
+      final PhoneVerificationFailed verFiledError = (AuthException exception) {
+        print('ERROR - ${exception.message}');
+      };
+
+      await FirebaseAuth.instance.verifyPhoneNumber(
+          phoneNumber: '+79194317000',
+          timeout: const Duration(seconds: 5),
+          verificationCompleted: verFieldSuccess,
+          verificationFailed: verFiledError,
+          codeSent: smsCodeSent,
+          codeAutoRetrievalTimeout: autoRetrieve,
+      );
+
+
+      //final AuthCredential credential = PhoneAuthProvider.getCredential(verificationId: null, smsCode: null)
+//
+//
+//
+//          try{
+//        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Otp()));
+//      }catch(e){
+//        Scaffold.of(context).showSnackBar(SnackBar(content: Text(e.message, style: TextStyle(color: Colors.white)), backgroundColor: Colors.red));
+//      }
     }
+  }
+
+  void resetPassword() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => ResetPassword(), fullscreenDialog: true));
   }
 
   void navigateToSignUp(){

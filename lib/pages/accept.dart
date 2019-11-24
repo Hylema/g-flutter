@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:flutter_app/pages/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/mixins/FireBaseAuth.dart';
 
 class Otp extends StatefulWidget {
   final String email;
@@ -32,6 +34,8 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
   int _secondDigit;
   int _thirdDigit;
   int _fourthDigit;
+  int _fiveDigit;
+  int _sixDigit;
 
   Timer timer;
   int totalTimeInSeconds;
@@ -85,6 +89,8 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
         _otpTextField(_secondDigit),
         _otpTextField(_thirdDigit),
         _otpTextField(_fourthDigit),
+        _otpTextField(_fiveDigit),
+        _otpTextField(_sixDigit),
       ],
     );
   }
@@ -238,6 +244,10 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
                             _secondDigit = null;
                           } else if (_firstDigit != null) {
                             _firstDigit = null;
+                          } else if (_fiveDigit != null) {
+                            _firstDigit = null;
+                          } else if (_sixDigit != null) {
+                            _firstDigit = null;
                           }
                         });
                       }),
@@ -367,17 +377,26 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
         _thirdDigit = _currentDigit;
       } else if (_fourthDigit == null) {
         _fourthDigit = _currentDigit;
+      } else if (_fiveDigit == null) {
+        _fiveDigit = _currentDigit;
+      } else if (_sixDigit == null) {
+        _sixDigit = _currentDigit;
 
-        var otp = _firstDigit.toString() +
+        var code = _firstDigit.toString() +
             _secondDigit.toString() +
             _thirdDigit.toString() +
-            _fourthDigit.toString();
+            _fourthDigit.toString() +
+            _fiveDigit.toString() +
+            _sixDigit.toString();
 
-        if(otp.length == 4){
+
+        try{
+          confirmSmsCode(code);
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+        }catch(e){
+          print(e);
         }
 
-        // Verify your otp by here. API call
       }
     });
   }
@@ -396,6 +415,8 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
     _thirdDigit = null;
     _secondDigit = null;
     _firstDigit = null;
+    _fiveDigit = null;
+    _sixDigit = null;
     setState(() {});
   }
 }

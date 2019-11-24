@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_app/pages/accept.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/pages/auth/ResetPassword.dart';
+import 'package:flutter_app/mixins/FireBaseAuth.dart';
 
 class NumberTextInputFormatter extends TextInputFormatter {
   @override
@@ -43,7 +44,7 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String _email, _password, _phone;
+  String _email, _password, _phone, verificationId;
   Color colorTextButton = Colors.white54;
   bool disablePassword = true;
 
@@ -170,10 +171,10 @@ class _WelcomePageState extends State<WelcomePage> {
                             TextFormField(
                               keyboardType: TextInputType.phone,
                               maxLength: 15,
-                              inputFormatters: <TextInputFormatter>[
-                                WhitelistingTextInputFormatter.digitsOnly,
-                                NumberTextInputFormatter(),
-                              ],
+//                              inputFormatters: <TextInputFormatter>[
+//                                WhitelistingTextInputFormatter.digitsOnly,
+//                                NumberTextInputFormatter(),
+//                              ],
                               decoration: InputDecoration(
                                 icon: Icon(Icons.phone_iphone),
                                 hintText: "Mobile*",
@@ -258,49 +259,19 @@ class _WelcomePageState extends State<WelcomePage> {
       if(_formKey.currentState.validate()){
         _formKey.currentState.save();
         try{
-          await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password);
+          await signInEmail(_email, _password);
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
         }catch(e){
           Scaffold.of(context).showSnackBar(SnackBar(content: Text(e.message, style: TextStyle(color: Colors.white)), backgroundColor: Colors.red));
         }
       }
     } else {
-      String verificationId;
-
-      final PhoneCodeAutoRetrievalTimeout autoRetrieve = (String verId) {
-        verificationId = verId;
-      };
-
-      final PhoneCodeSent smsCodeSent = (String verId, [int forceCodeResend]) {
-        verificationId = verId;
-      };
-
-      final PhoneVerificationCompleted verFieldSuccess = (user) {
-        print('Success');
-      };
-
-      final PhoneVerificationFailed verFiledError = (AuthException exception) {
-        print('ERROR - ${exception.message}');
-      };
-
-      await FirebaseAuth.instance.verifyPhoneNumber(
-          phoneNumber: '+79194317000',
-          timeout: const Duration(seconds: 5),
-          verificationCompleted: verFieldSuccess,
-          verificationFailed: verFiledError,
-          codeSent: smsCodeSent,
-          codeAutoRetrievalTimeout: autoRetrieve,
-      );
-
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Otp()));
-//
-//
-//
-//          try{
-//        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Otp()));
-//      }catch(e){
-//        Scaffold.of(context).showSnackBar(SnackBar(content: Text(e.message, style: TextStyle(color: Colors.white)), backgroundColor: Colors.red));
-//      }
+      try{
+        await signInPhone(_phone);
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Otp()));
+      }catch(e){
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text(e.message, style: TextStyle(color: Colors.white)), backgroundColor: Colors.red));
+      }
     }
   }
 

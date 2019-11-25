@@ -71,7 +71,7 @@ class MyFormState extends State {
       _formKey.currentState.save();
       try{
         await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _email, password: _password);
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage()));
       }catch(e){
         Scaffold.of(context).showSnackBar(SnackBar(content: Text(e.message, style: TextStyle(color: Colors.white)), backgroundColor: Colors.red));
       }

@@ -20,7 +20,7 @@ class FABBottomAppBar extends StatefulWidget {
   }) {
     assert(this.items.length == 2 || this.items.length == 4);
   }
-  final List<FABBottomAppBarItem> items;
+  final List items;
   final String centerItemText;
   final double height;
   final double iconSize;
@@ -38,7 +38,6 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
   int _selectedIndex = 0;
 
   _updateIndex(int index) {
-    widget.onTabSelected(index);
     setState(() {
       _selectedIndex = index;
     });
@@ -97,7 +96,9 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
         child: Material(
           type: MaterialType.transparency,
           child: InkWell(
-            onTap: () => onPressed(index),
+            onTap: (){
+              onPressed(index);
+            },
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,

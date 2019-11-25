@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-// https://stackoverflow.com/questions/46480221/flutter-floating-action-button-with-speed-dail
 class FabWithIcons extends StatefulWidget {
-  FabWithIcons({this.icons, this.onIconTapped});
+  FabWithIcons({this.icons});
+
   final List<IconData> icons;
-  ValueChanged<int> onIconTapped;
+
   @override
   State createState() => FabWithIconsState();
 }
@@ -23,15 +23,15 @@ class FabWithIconsState extends State<FabWithIcons> with TickerProviderStateMixi
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(widget.icons.length, (int index) {
-        return _buildChild(index);
-      }).toList()..add(
-        _buildFab(),
-      ),
-    );
+    return _buildFab();
+//    return Padding(
+//      padding: EdgeInsets.only(top: 140.0),
+//      child: Column(
+//        children: List.generate(widget.icons.length, (int index) {
+//          return _buildChild(index);
+//        }).toList()..add(_buildFab()),
+//      ),
+//    );
   }
 
   Widget _buildChild(int index) {
@@ -54,7 +54,7 @@ class FabWithIconsState extends State<FabWithIcons> with TickerProviderStateMixi
           backgroundColor: backgroundColor,
           mini: true,
           child: Icon(widget.icons[index], color: foregroundColor),
-          onPressed: () => _onTapped(index),
+          onPressed: () {},
         ),
       ),
     );
@@ -68,15 +68,12 @@ class FabWithIconsState extends State<FabWithIcons> with TickerProviderStateMixi
         } else {
           _controller.reverse();
         }
+
       },
+
       tooltip: 'Increment',
       child: Icon(Icons.add),
       elevation: 2.0,
     );
-  }
-
-  void _onTapped(int index) {
-    _controller.reverse();
-    widget.onIconTapped(index);
   }
 }

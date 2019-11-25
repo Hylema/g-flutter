@@ -260,14 +260,17 @@ class _WelcomePageState extends State<WelcomePage> {
         _formKey.currentState.save();
         try{
           await signInEmail(_email, _password);
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage()));
         }catch(e){
           Scaffold.of(context).showSnackBar(SnackBar(content: Text(e.message, style: TextStyle(color: Colors.white)), backgroundColor: Colors.red));
         }
       }
     } else {
       try{
-        await signInPhone(_phone);
+        var test = await signInPhone(_phone);
+        print('___________________________________');
+        print(test);
+        print('___________________________________');
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Otp()));
       }catch(e){
         Scaffold.of(context).showSnackBar(SnackBar(content: Text(e.message, style: TextStyle(color: Colors.white)), backgroundColor: Colors.red));

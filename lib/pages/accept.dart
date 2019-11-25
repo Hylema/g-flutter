@@ -366,7 +366,7 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
   }
 
   // Current digit
-  void _setCurrentDigit(int i) {
+  void _setCurrentDigit(int i){
     setState(() {
       _currentDigit = i;
       if (_firstDigit == null) {
@@ -392,8 +392,14 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
 
         try{
           confirmSmsCode(code);
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage()));
         }catch(e){
+          print('ERROR');
+          print('ERROR');
+          print('ERROR');
+          print('ERROR');
+          print('ERROR');
+          print('ERROR');
           print(e);
         }
 

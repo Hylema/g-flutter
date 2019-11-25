@@ -8,7 +8,7 @@ routes(){
   return {
     '/': (BuildContext context) => WelcomePage(),
     '/signUp': (BuildContext context) => SignUp(),
-    '/home': (BuildContext context) => HomePage(),
+    '/home': (BuildContext context) => MyHomePage(),
     '/accept': (BuildContext context) => Otp(),
   };
 }

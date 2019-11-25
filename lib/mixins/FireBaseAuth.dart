@@ -22,6 +22,7 @@ signInPhone(phone) async{
 
   final PhoneVerificationFailed verFiledError = (AuthException exception) {
     print('ERROR - ${exception.message}');
+    return throw('ERROR - ${exception.message}');
   };
 
   await FirebaseAuth.instance.verifyPhoneNumber(
@@ -34,10 +35,10 @@ signInPhone(phone) async{
   );
 
   //Проверка авторизованного пользователя
-  FirebaseAuth.instance.currentUser().then((user){});
+  //FirebaseAuth.instance.currentUser().then((user){});
 }
 
-confirmSmsCode(code) async {
+confirmSmsCode(code) async{
   final AuthCredential credential = PhoneAuthProvider.getCredential(
     verificationId: verificationId,
     smsCode: code,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/pages/auth/fireBaseAuth/SignIn.dart';
 import 'package:flutter_app/pages/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_app/mixins/FireBaseAuth.dart';
 
 class ResetPassword extends StatefulWidget {
   @override
@@ -61,7 +63,12 @@ class ResetPasswordState extends State {
     if(_formKey.currentState.validate()) {
       _formKey.currentState.save();
       try {
-        await FirebaseAuth.instance.sendPasswordResetEmail(email: _email);
+        await resetPasswordEmail(_email);
+        //Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SignInFireBase()),
+        );
         Scaffold.of(context).showSnackBar(SnackBar(content: Text('Сообщение успешно отправленно по адресу - ${_email}', style: TextStyle(color: Colors.white)), backgroundColor: Colors.green));
       } catch(e) {
         Scaffold.of(context).showSnackBar(SnackBar(content: Text(e.message, style: TextStyle(color: Colors.white)), backgroundColor: Colors.red));

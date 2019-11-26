@@ -1,48 +1,48 @@
-import 'package:flutter_app/pages/auth/SignUp.dart';
+import 'package:flutter_app/pages/auth/fireBaseAuth/SignUp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_app/pages/accept.dart';
+import 'package:flutter_app/pages/auth/fireBaseAuth/accept.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_app/pages/auth/ResetPassword.dart';
+import 'package:flutter_app/pages/auth/fireBaseAuth/ResetPassword.dart';
 import 'package:flutter_app/mixins/FireBaseAuth.dart';
 
-class NumberTextInputFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
-
-    final int newTextLength = newValue.text.length;
-    int selectionIndex = newValue.selection.end;
-    int usedSubstringIndex = 0;
-    final StringBuffer newText = new StringBuffer();
-
-    print('old = ${oldValue.text}');
-    print('new = ${newValue.text}');
-
-    if (newTextLength >= 1) {
-      newText.write('+7 ');
-      selectionIndex += 2;
-    }
-//    if (newTextLength == 2) {
-//      newText.write(newValue.text.substring(0, usedSubstringIndex = 1) + ' ');
-//      selectionIndex += 1;
+//class NumberTextInputFormatter extends TextInputFormatter {
+//  @override
+//  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+//
+//    final int newTextLength = newValue.text.length;
+//    int selectionIndex = newValue.selection.end;
+//    int usedSubstringIndex = 0;
+//    final StringBuffer newText = new StringBuffer();
+//
+//    print('old = ${oldValue.text}');
+//    print('new = ${newValue.text}');
+//
+//    if (newTextLength >= 1) {
+//      newText.write('+7 ');
+//      selectionIndex += 2;
 //    }
+////    if (newTextLength == 2) {
+////      newText.write(newValue.text.substring(0, usedSubstringIndex = 1) + ' ');
+////      selectionIndex += 1;
+////    }
+//
+//    if (newTextLength >= usedSubstringIndex) newText.write(newValue.text.substring(usedSubstringIndex));
+//
+//    return TextEditingValue(
+//      text: newText.toString(),
+//      selection: TextSelection.collapsed(offset: selectionIndex),
+//    );
+//  }
+//}
 
-    if (newTextLength >= usedSubstringIndex) newText.write(newValue.text.substring(usedSubstringIndex));
-
-    return TextEditingValue(
-      text: newText.toString(),
-      selection: TextSelection.collapsed(offset: selectionIndex),
-    );
-  }
-}
-
-class WelcomePage extends StatefulWidget {
+class SignInFireBase extends StatefulWidget {
   @override
-  _WelcomePageState createState() => _WelcomePageState();
+  _SignInFireBaseState createState() => _SignInFireBaseState();
 }
 
-class _WelcomePageState extends State<WelcomePage> {
+class _SignInFireBaseState extends State<SignInFireBase> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String _email, _password, _phone, verificationId;
   Color colorTextButton = Colors.white54;
@@ -58,13 +58,13 @@ class _WelcomePageState extends State<WelcomePage> {
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               title: Text('Авторизация'),
-              centerTitle: false,
+              centerTitle: true,
               collapseMode: CollapseMode.parallax,
               background: Container(
                 color: Colors.white,
                 constraints: BoxConstraints.expand(height: 150),
                 child: Image.network(
-                  'https://avatars.mds.yandex.net/get-pdb/199965/32b4ec73-14a2-4550-bd6c-5a7f5f5cdd18/s1200?webp=false',
+                  'https://hsto.org/webt/7z/ja/il/7zjailca5a5ksya71ajsbfbdxvk.png',
                   fit: BoxFit.cover,
                 ),
               ),
@@ -189,7 +189,7 @@ class _WelcomePageState extends State<WelcomePage> {
 
                             MaterialButton(
                               onPressed: (){
-                                signIn(context);
+                                //signIn(context);
                               },
                               padding: EdgeInsets.symmetric(vertical: 15),
                               shape: RoundedRectangleBorder(
@@ -271,7 +271,7 @@ class _WelcomePageState extends State<WelcomePage> {
         print('___________________________________');
         print(test);
         print('___________________________________');
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Otp()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => Otp()));
       }catch(e){
         Scaffold.of(context).showSnackBar(SnackBar(content: Text(e.message, style: TextStyle(color: Colors.white)), backgroundColor: Colors.red));
       }
@@ -283,6 +283,6 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   void navigateToSignUp(){
-    Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp(), fullscreenDialog: true));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpFireBase(), fullscreenDialog: true));
   }
 }

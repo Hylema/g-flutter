@@ -46,3 +46,7 @@ confirmSmsCode(code) async{
 
   await FirebaseAuth.instance.signInWithCredential(credential);
 }
+
+resetPasswordEmail(email) async {
+  await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+}

@@ -1,17 +1,37 @@
 import 'package:flutter_app/fab_with_icons.dart';
 import 'package:flutter_app/fab_bottom_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/state/toroWebAuthState.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_app/constants/toroWebAuthConst.dart';
+
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
+  MyHomePage({this.codeUrl = ''});
+  final String codeUrl;
 
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  _MyHomePageState createState() => new _MyHomePageState(codeUrl: codeUrl);
 }
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+  final String codeUrl;
+  _MyHomePageState({
+    this.codeUrl
+  });
+
+  get response async{
+    return await http.post('https://login.microsoftonline.com/12f6ad44-d1ba-410f-97d4-6c966e38421b/oauth2/token', body: {
+      ...constants,
+      'code': codeUrl
+    }).then((result) {
+
+      print('=========================!!!!!!!!!!!!!!!!!!======================${response.body}');
+
+      return result.body;
+    });
+  }
+
   final bottomAppBarItem = [
     {
       'iconData': Icons.home,
@@ -65,6 +85,23 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               delegate: SliverChildListDelegate([
                 SizedBox(
                   height: 1000,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text('РЕЗУЛЬТАТ'),
+                      SizedBox(height: 5.0),
+                      Text(
+                        codeUrl == null ? 'Не удалось получить код авторизации' : 'Код авторизации успешно получен === CODE=$codeUrl',
+                        style: codeUrl == null ? TextStyle(color: Colors.red) : TextStyle(color: Colors.green),
+                      ),
+                      SizedBox(height: 5.0),
+                      Text(
+                          'Ответ запроса на получение токена === RESPONSE=$response'
+                      ),
+                      SizedBox(height: 5.0),
+                    ],
+                  ),
                 ),
               ]),
             )

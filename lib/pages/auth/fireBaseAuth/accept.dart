@@ -26,6 +26,7 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
   // Constants
   final int time = 30;
   AnimationController _controller;
+  var code;
 
   // Variables
   Size _screenSize;
@@ -40,6 +41,7 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
   Timer timer;
   int totalTimeInSeconds;
   bool _hideResendButton;
+  bool statusError = false;
 
   String userName = "";
   bool didReadNotifications = false;
@@ -236,17 +238,17 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
                       ),
                       onPressed: () {
                         setState(() {
-                          if (_fourthDigit != null) {
+                          if (_sixDigit != null) {
+                            _sixDigit = null;
+                          } else if (_fiveDigit != null) {
+                            _fiveDigit = null;
+                          } else if (_fourthDigit != null) {
                             _fourthDigit = null;
                           } else if (_thirdDigit != null) {
                             _thirdDigit = null;
                           } else if (_secondDigit != null) {
                             _secondDigit = null;
                           } else if (_firstDigit != null) {
-                            _firstDigit = null;
-                          } else if (_fiveDigit != null) {
-                            _firstDigit = null;
-                          } else if (_sixDigit != null) {
                             _firstDigit = null;
                           }
                         });
@@ -307,7 +309,7 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
         digit != null ? digit.toString() : "",
         style: new TextStyle(
           fontSize: 30.0,
-          color: Colors.black,
+          color: statusError ? Colors.red : Colors.black,
         ),
       ),
       decoration: BoxDecoration(
@@ -315,7 +317,7 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
           border: Border(
               bottom: BorderSide(
                 width: 2.0,
-                color: Colors.black,
+                color: statusError ? Colors.red : Colors.black,
               ))),
     );
   }
@@ -366,7 +368,7 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
   }
 
   // Current digit
-  void _setCurrentDigit(int i){
+  void _setCurrentDigit(int i) async{
     setState(() {
       _currentDigit = i;
       if (_firstDigit == null) {
@@ -382,29 +384,25 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
       } else if (_sixDigit == null) {
         _sixDigit = _currentDigit;
 
-        var code = _firstDigit.toString() +
+        code = _firstDigit.toString() +
             _secondDigit.toString() +
             _thirdDigit.toString() +
             _fourthDigit.toString() +
             _fiveDigit.toString() +
             _sixDigit.toString();
-
-
-        try{
-          confirmSmsCode(code);
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage()));
-        }catch(e){
-          print('ERROR');
-          print('ERROR');
-          print('ERROR');
-          print('ERROR');
-          print('ERROR');
-          print('ERROR');
-          print(e);
-        }
-
       }
     });
+
+    if(code != null){
+      try{
+        var response = await confirmSmsCode(code);
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+      }catch(e){
+        print('ERROR==============-----------------================ERROR');
+        errorReset();
+        print(e);
+      }
+    }
   }
 
   Future<Null> _startCountdown() async {
@@ -416,6 +414,20 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
         from: _controller.value == 0.0 ? 1.0 : _controller.value);
   }
 
+  void errorReset() async{
+    setState(() {
+      statusError = true;
+    });
+
+    await sleep();
+
+    clearOtp();
+  }
+
+  Future sleep() {
+    return new Future.delayed(const Duration(milliseconds: 1000));
+  }
+
   void clearOtp() {
     _fourthDigit = null;
     _thirdDigit = null;
@@ -423,7 +435,10 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
     _firstDigit = null;
     _fiveDigit = null;
     _sixDigit = null;
-    setState(() {});
+    setState(() {
+      statusError = false;
+      code = null;
+    });
   }
 }
 

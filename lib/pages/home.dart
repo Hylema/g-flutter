@@ -1,7 +1,6 @@
 import 'package:flutter_app/fab_with_icons.dart';
 import 'package:flutter_app/fab_bottom_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/state/toroWebAuthState.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_app/constants/toroWebAuthConst.dart';
 
@@ -20,18 +19,38 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     this.codeUrl
   });
 
-  get response async{
-    return await http.post('https://login.microsoftonline.com/12f6ad44-d1ba-410f-97d4-6c966e38421b/oauth2/token', body: {
-      ...constants,
-      'code': codeUrl
-    }).then((result) {
+  var _response;
+  var _statusCode;
 
-      print('=========================!!!!!!!!!!!!!!!!!!======================${response.body}');
+  get response{
+    if(_response == null){
+      http.post('https://login.microsoftonline.com/12f6ad44-d1ba-410f-97d4-6c966e38421b/oauth2/token', body: {
+        ...constants,
+        'code': codeUrl
+      }).then((onValue) {
+        response = onValue.body;
+        statusCode = onValue.statusCode;
+      });
+    }
 
-      return result.body;
+    return _response;
+  }
+
+  set response(newValue){
+    setState(() {
+      _response = newValue;
     });
   }
 
+  get statusCode {
+    return _statusCode;
+  }
+
+  set statusCode(newValue){
+    setState(() {
+      _statusCode = newValue;
+    });
+  }
   final bottomAppBarItem = [
     {
       'iconData': Icons.home,
@@ -97,8 +116,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                       ),
                       SizedBox(height: 5.0),
                       Text(
-                          'Ответ запроса на получение токена === RESPONSE=$response'
+                          'Ответ запроса на получение токена === RESPONSE=$response',
+                        style: _statusCode == null || _statusCode == 400 ? TextStyle(color: Colors.red) : TextStyle(color: Colors.green),
                       ),
+                      SizedBox(height: 5.0),
+                      Text('СТАТУС КОД==========================$_statusCode'),
                       SizedBox(height: 5.0),
                     ],
                   ),

@@ -26,8 +26,8 @@ class _WelcomePageState extends State<WelcomePage> {
               background: Container(
                 color: Colors.white,
                 constraints: BoxConstraints.expand(height: 150),
-                child: Image.network(
-                  'https://img2.thuthuatphanmem.vn/uploads/2019/03/05/nhung-hinh-nen-powerpoint-mo-dau-dep-va-an-tuong-nhat_111159625.jpg',
+                child: Image.asset(
+                  'images/welcome.jpg',
                   fit: BoxFit.cover,
                 ),
               ),
@@ -47,7 +47,8 @@ class _WelcomePageState extends State<WelcomePage> {
                             'Выберите способ авторизации',
                             style: TextStyle(
                                 fontSize: 24.0,
-                                fontWeight: FontWeight.bold
+                                //fontWeight: FontWeight.bold,
+                                fontFamily: 'Pacifico'
                             ),
                           ),
                         ),

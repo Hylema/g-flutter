@@ -2,12 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 String verificationId;
+var result;
 
 signInEmail(email, password) async{
   await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
 }
 
+Future sleep() {
+  return new Future.delayed(const Duration(seconds: 1));
+}
+
 signInPhone(phone) async{
+  result = {
+    'result': true
+  };
+
   final PhoneCodeAutoRetrievalTimeout autoRetrieve = (String verId) {
     verificationId = verId;
   };
@@ -22,7 +31,10 @@ signInPhone(phone) async{
 
   final PhoneVerificationFailed verFiledError = (AuthException exception) {
     print('ERROR - ${exception.message}');
-    return throw('ERROR - ${exception.message}');
+    result = {
+      'message': exception.message,
+      'result': false
+    };
   };
 
   await FirebaseAuth.instance.verifyPhoneNumber(
@@ -33,6 +45,11 @@ signInPhone(phone) async{
     codeSent: smsCodeSent,
     codeAutoRetrievalTimeout: autoRetrieve,
   );
+
+  //TODO лучше это убрать
+  await sleep();
+
+  return result;
 
   //Проверка авторизованного пользователя
   //FirebaseAuth.instance.currentUser().then((user){});
